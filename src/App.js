@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
+import AddTodoForm from './AddTodoForm';
+import TodoList from './TodoList';
+
 
 function App() {
+
+  const [ newTodo, setNewTodo ] = useState('')
+
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div>
       <header>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
+        <h1>Todo List</h1>
       </header>
+      <TodoList />
+      <AddTodoForm onAddTodo={setNewTodo}/>
+      <p>
+        {newTodo}
+      </p>
     </div>
   );
 }
