@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AddTodoForm from './AddTodoForm';
 import TodoList from './TodoList';
 
 
 function App() {
+
+  const [ newTodo, setNewTodo ] = useState('')
 
   return (
     <div>
@@ -11,7 +13,10 @@ function App() {
         <h1>Todo List</h1>
       </header>
       <TodoList />
-      <AddTodoForm />
+      <AddTodoForm onAddTodo={setNewTodo}/>
+      <p>
+        {newTodo}
+      </p>
     </div>
   );
 }
