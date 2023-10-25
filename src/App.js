@@ -5,17 +5,26 @@ import TodoList from './TodoList';
 
 function App() {
 
-  const [ newTodo, setNewTodo ] = useState('')
+
+  const [todoList, setTodoList] = useState([])
+
+
+  const addTodo = (newTodo) => {
+    setTodoList([...todoList, newTodo])
+  }
 
   return (
     <div>
       <header>
         <h1>Todo List</h1>
       </header>
-      <TodoList />
-      <AddTodoForm onAddTodo={setNewTodo}/>
+      <TodoList todoState={todoList}/>
+      <AddTodoForm onAddTodo={addTodo}/>
       <p>
-        {newTodo}
+      {todoList.map(todo => (
+        <div key={todo.id}>
+        <p>{todo.title}</p>
+        </div>))}
       </p>
     </div>
   );
