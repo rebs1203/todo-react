@@ -20,12 +20,6 @@ function App() {
       </header>
       <TodoList todoState={todoList}/>
       <AddTodoForm onAddTodo={addTodo}/>
-      <p>
-      {todoList.map(todo => (
-        <div key={todo.id}>
-        <p>{todo.title}</p>
-        </div>))}
-      </p>
     </div>
   );
 }
