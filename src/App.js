@@ -9,7 +9,6 @@ const useSemiPersistentState = () => {
     localStorage.setItem("savedTodoList", JSON.stringify(todoList))
   }, [todoList])
 
-
   return [todoList, setTodoList]
 }
 
@@ -22,13 +21,26 @@ function App() {
   }
 
 
+  const removeTodo = (id) => {
+
+    const index = value.findIndex(todo => todo.id === id)
+
+    if(index !== -1) {
+      const updatedList = [...value]
+      updatedList.splice(index, 1)
+      setValue(updatedList)
+    }
+  }
+
+
+
   return (
     <>
       <header>
         <h1>Todo List</h1>
       </header>
       <AddTodoForm onAddTodo={addTodo}/>
-      <TodoList todoState={value}/>
+      <TodoList todoState={value} onRemoveTodo={removeTodo}/>
     </>
   );
 }
