@@ -3,6 +3,8 @@ import TodoListItem from "./TodoListItem";
 
 const TodoList = ({ todoState }) => {
 
+console.log(todoState);
+
     return (
         <div>
             <ul>
