@@ -2,33 +2,49 @@ import React, { useEffect, useState } from 'react';
 import AddTodoForm from './AddTodoForm';
 import TodoList from './TodoList';
 
-const useSemiPersistentState = () => {
-  const [todoList, setTodoList] = useState(JSON.parse(localStorage.getItem("savedTodoList"))??[])
-  
-  useEffect(() => {
-    localStorage.setItem("savedTodoList", JSON.stringify(todoList))
-  }, [todoList])
-
-  return [todoList, setTodoList]
-}
 
 function App() {
 
-  const [value, setValue] = useSemiPersistentState()
+  const [todoList, setTodoList] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const data = { todoList: [] };
+
+        resolve(data);
+      }, 2000);
+    }).then((result) => {setTodoList(result.todoList)
+      setIsLoading(false)
+    })
+    return result 
+  }
+
+    fetchData();
+  }, [todoList])
+
+  useEffect(() => {
+    if (!isLoading) {
+      localStorage.setItem("savedTodoList", JSON.stringify(todoList))
+    }
+  }, [isLoading, todoList])
+
 
   const addTodo = (newTodo) => {
-    setValue([...value, newTodo])
+    setTodoList([...todoList, newTodo])
   }
 
 
   const removeTodo = (id) => {
 
-    const index = value.findIndex(todo => todo.id === id)
+    const index = todoList.findIndex(todo => todo.id === id)
 
     if(index !== -1) {
-      const updatedList = [...value]
+      const updatedList = [...todoList]
       updatedList.splice(index, 1)
-      setValue(updatedList)
+      setTodoList(updatedList)
     }
   }
 
@@ -40,7 +56,12 @@ function App() {
         <h1>Todo List</h1>
       </header>
       <AddTodoForm onAddTodo={addTodo}/>
-      <TodoList todoState={value} onRemoveTodo={removeTodo}/>
+      {
+        isLoading ?
+        <p>Loading...</p>
+        :
+        <TodoList todoState={todoList} onRemoveTodo={removeTodo}/>
+      }
     </>
   );
 }
