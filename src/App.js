@@ -8,22 +8,17 @@ function App() {
   const [todoList, setTodoList] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
     const fetchData = async () => {
       const result = await new Promise((resolve, reject) => {
       setTimeout(() => {
-        const data = { todoList: [] };
-
-        resolve(data);
+        setIsLoading(false)
       }, 2000);
-    }).then((result) => {setTodoList(result.todoList)
-      setIsLoading(false)
-    })
+    }).then((result) => {setTodoList(result.todoList)})
     return result 
   }
 
     fetchData();
-  }, [todoList])
+
 
   useEffect(() => {
     if (!isLoading) {
