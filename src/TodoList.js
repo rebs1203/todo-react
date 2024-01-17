@@ -6,7 +6,7 @@ const TodoList = ({ todoState, onRemoveTodo }) => {
 
 
     return (
-        <div className={style.div}>
+        <div className={style.divTodoList}>
             <ul>
                 {todoState?.map((todo) => {
                     return (
