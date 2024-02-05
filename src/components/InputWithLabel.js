@@ -18,7 +18,10 @@ const InputWithLabel = (props) => {
 }
 
 InputWithLabel.prototype = {
-    props: PropTypes.node
+    todoTitle: PropTypes.node,
+    handleTitleChange: PropTypes.node,
+    children: PropTypes.node
+
 }
 
 export default InputWithLabel
