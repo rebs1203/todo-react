@@ -26,6 +26,16 @@ function App() {
       }
       const data = await response.json()
 
+      data.records.sort((objectA, objectB) => {
+        if (objectA < objectB) {
+          return -1
+        } else if (objectA > objectB) {
+          return 1
+        } else {
+          return 0
+        }
+      })
+
       const todos = data.records.map((todo) => todo = {title: todo.fields.title, id: todo.id })
       setTodoList(todos)
       setIsLoading(false)
