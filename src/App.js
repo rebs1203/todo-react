@@ -27,14 +27,18 @@ function App() {
       const data = await response.json()
 
       data.records.sort((objectA, objectB) => {
-        if (objectA < objectB) {
-          return -1
-        } else if (objectA > objectB) {
-          return 1
+        const titleA = objectA.fields.title.toUpperCase();
+        const titleB = objectB.fields.title.toUpperCase();
+    
+        if (titleA < titleB) {
+            return -1;
+        } else if (titleA > titleB) {
+            return 1;
         } else {
-          return 0
+            return 0;
         }
-      })
+    });
+    
 
       const todos = data.records.map((todo) => todo = {title: todo.fields.title, id: todo.id })
       setTodoList(todos)
