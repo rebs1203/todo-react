@@ -1,0 +1,8 @@
+.listItem {
+    color: blue !important;
+    margin-bottom: 10%;
+}
+
+.removeButton {
+    background-color: white;
+}

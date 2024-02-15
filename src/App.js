@@ -1,47 +1,96 @@
-import React, { useEffect, useState } from 'react';
-import AddTodoForm from './AddTodoForm';
-import TodoList from './TodoList';
-
-const useSemiPersistentState = () => {
-  const [todoList, setTodoList] = useState(JSON.parse(localStorage.getItem("savedTodoList"))??[])
-  
-  useEffect(() => {
-    localStorage.setItem("savedTodoList", JSON.stringify(todoList))
-  }, [todoList])
-
-  return [todoList, setTodoList]
-}
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AddTodoForm from './components/AddTodoForm';
+import TodoList from './components/TodoList';
 
 function App() {
 
-  const [value, setValue] = useSemiPersistentState()
+  const [todoList, setTodoList] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+
+
+  const fetchData = async () => {
+    const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`
+    
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization:`Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`
+    }
+    }
+    
+    try {
+      const response = await fetch(url, options)
+      if(!response.ok) {
+        throw new Error(`Error: ${response.status}`)
+      }
+      const data = await response.json()
+
+      data.records?.sort((objectA, objectB) => {
+          return objectA.fields?.title?.toUpperCase().localeCompare(objectB.fields?.title?.toUpperCase())
+      });
+    
+
+      const todos = data.records.map((todo) => todo = {title: todo.fields.title, id: todo.id })
+      setTodoList(todos)
+      setIsLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+
+}
+
+  useEffect(() => {
+    fetchData();
+  }, [])
+
+
+  useEffect(() => {
+    if (!isLoading) {
+      localStorage.setItem("savedTodoList", JSON.stringify(todoList))
+    }
+  }, [isLoading, todoList])
+
 
   const addTodo = (newTodo) => {
-    setValue([...value, newTodo])
+    setTodoList([...todoList, newTodo])
   }
 
 
   const removeTodo = (id) => {
 
-    const index = value.findIndex(todo => todo.id === id)
+    const index = todoList.findIndex(todo => todo.id === id)
 
     if(index !== -1) {
-      const updatedList = [...value]
+      const updatedList = [...todoList]
       updatedList.splice(index, 1)
-      setValue(updatedList)
+      setTodoList(updatedList)
     }
   }
 
 
 
   return (
-    <>
-      <header>
-        <h1>Todo List</h1>
-      </header>
-      <AddTodoForm onAddTodo={addTodo}/>
-      <TodoList todoState={value} onRemoveTodo={removeTodo}/>
-    </>
+    <div style={{backgroundColor: 'pink', paddingBottom: '50%'}}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<>
+          <header style={{ display: 'flex', justifyContent: 'center', fontFamily: 'monospace', color: 'blue', fontSize: '30px'}}>
+            <h1>Todo List</h1>
+          </header>
+          <AddTodoForm onAddTodo={addTodo} />
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <TodoList todoState={todoList} onRemoveTodo={removeTodo} />
+          )}
+        </>} />
+        <Route path='/new' element={<>
+          <h1>New Todo List</h1>
+        </>} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
