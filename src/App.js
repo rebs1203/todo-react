@@ -26,18 +26,9 @@ function App() {
       }
       const data = await response.json()
 
-      data.records.sort((objectA, objectB) => {
-        const titleA = objectA.fields.title.toUpperCase();
-        const titleB = objectB.fields.title.toUpperCase();
-    
-        if (titleA < titleB) {
-            return -1;
-        } else if (titleA > titleB) {
-            return 1;
-        } else {
-            return 0;
-        }
-    });
+      data.records?.sort((objectA, objectB) => {
+          return objectA.fields?.title?.toUpperCase().localeCompare(objectB.fields?.title?.toUpperCase())
+      });
     
 
       const todos = data.records.map((todo) => todo = {title: todo.fields.title, id: todo.id })
